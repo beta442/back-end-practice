@@ -145,10 +145,5 @@ namespace ConsoleApplication
 
             return "Expected: " + spaceSeparatedAllowedOperators + "\n";
         }
-
-        private static string InitInvalidOperandsMessage()
-        {
-            return "One or both operands are incorrect. Expected numbers like <<1234>|<0,1234>|<1e25>> between -5e324 and +1.7e308\n";
-        }
     }
 }
