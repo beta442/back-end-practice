@@ -47,6 +47,32 @@ namespace ScrumBoard.Board
             return -1;
         }
 
+        public string GetColumnNameByIndex(int columnIndex)
+        {
+            if (_taskColumns.Count <= columnIndex || columnIndex < 0)
+            {
+                throw new Exception("Index out of range while getting column name");
+            }
+
+            return _taskColumns[columnIndex].GetName();
+        }
+
+        public List<string> GetAllColumnsNames()
+        {
+            if (_taskColumns.Count == 0)
+            {
+                return new List<string>();
+            }
+
+            List<string> names = new();
+            foreach (ITaskColumn column in _taskColumns)
+            {
+                names.Add(column.GetName());
+            }
+
+            return names;
+        }
+
         public void MoveColumnFromTo(int indexFrom, int indexTo)
         {
             if (indexFrom < 0 || indexTo < 0 || indexFrom >= _taskColumns.Count || indexTo >= _taskColumns.Count)
@@ -57,7 +83,27 @@ namespace ScrumBoard.Board
             _taskColumns.Move(indexFrom, indexTo);
         }
 
-        public void AddTaskIntoColumn(string taskName, string taskDescription, uint taskPriority, int columnIndex = 0)
+        public void PrintColumnContent(int columnIndex)
+        {
+            if (columnIndex < 0 || columnIndex >= _taskColumns.Count || _taskColumns[columnIndex].GetPrioritedTaskList().Count == 0)
+            {
+                return;
+            }
+
+            uint taskPriority = 0;
+            foreach (KeyValuePair<int, List<ITask>> prioritedTaskList in _taskColumns[columnIndex].GetPrioritedTaskList())
+            {
+                Console.WriteLine("Tasks with " + taskPriority.ToString() + " priority:");
+                foreach (ITask task in prioritedTaskList.Value)
+                {
+                    Console.WriteLine("--Name: " + task.GetName());
+                    Console.WriteLine("--Description: " + task.GetDescription());
+                }
+                taskPriority++;
+            }
+        }
+
+        public void AddTaskIntoColumn(string taskName, string taskDescription, int taskPriority, int columnIndex = 0)
         {
             if (taskName.Length == 0)
             {
@@ -67,19 +113,28 @@ namespace ScrumBoard.Board
             {
                 throw new Exception("Task's description can't be empty");
             }
-            if (columnIndex < 0 || columnIndex > _taskColumns.Count)
+            if (columnIndex < 0 || columnIndex >= _taskColumns.Count)
             {
                 throw new Exception("Given column index is out of ragne, can't insert task");
+            }
+            if (!_taskColumns[columnIndex].GetPrioritedTaskList().ContainsKey(taskPriority))
+            {
+                _taskColumns[columnIndex].GetPrioritedTaskList().Add(taskPriority, new List<ITask>());
             }
 
             Task task = new(taskName, taskDescription, taskPriority);
 
-            _taskColumns[columnIndex].GetPrioritedTaskList()[(int)taskPriority].Add(task);
+            _taskColumns[columnIndex].GetPrioritedTaskList()[taskPriority].Add(task);
         }
 
         public string GetBoardName()
         {
             return _name;
+        }
+
+        public int GetColumnAmount()
+        {
+            return _taskColumns.Count;
         }
     }
 }

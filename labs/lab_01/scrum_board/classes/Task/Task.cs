@@ -4,8 +4,8 @@
     {
         private string _name;
         private string _description;
-        private uint _priority;
-        public Task(string name, string description, uint priority)
+        private int _priority;
+        public Task(string name, string description, int priority)
         {
             _name = name;
             _description = description;
@@ -32,12 +32,12 @@
             _description = description;
         }
 
-        public ulong GetPriority()
+        public int GetPriority()
         {
             return _priority;
         }
 
-        public void SetPriority(uint priority)
+        public void SetPriority(int priority)
         {
             _priority = priority;
         }

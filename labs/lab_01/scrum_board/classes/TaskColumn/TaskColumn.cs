@@ -2,7 +2,7 @@
 {
     internal class TaskColumn : ITaskColumn
     {
-        private readonly List<List<ITask>> _prioritedTasks = new();
+        private readonly Dictionary<int, List<ITask>> _prioritedTasks = new();
         private string _name;
         public TaskColumn(string name)
         {
@@ -14,7 +14,7 @@
             return _name;
         }
 
-        public List<List<ITask>> GetPrioritedTaskList()
+        public Dictionary<int, List<ITask>> GetPrioritedTaskList()
         {
             return _prioritedTasks;
         }
@@ -26,13 +26,17 @@
 
         public void AddTask(ITask task)
         {
-            ulong newTaskPriority = task.GetPriority();
-            _prioritedTasks.ElementAt((int)newTaskPriority).Add(task);
+            int newTaskPriority = task.GetPriority();
+            if (!_prioritedTasks.ContainsKey(newTaskPriority))
+            {
+                _prioritedTasks.Add(newTaskPriority, new List<ITask>());
+            }
+            _prioritedTasks[newTaskPriority].Add(task);
         }
 
         public bool RemoveTask(int taskPriority, int taskNumber)
         {
-            if (_prioritedTasks.Count <= taskPriority || _prioritedTasks[taskPriority].Count <= taskNumber)
+            if (!_prioritedTasks.ContainsKey(taskPriority) || _prioritedTasks[taskPriority].Count <= taskNumber)
             {
                 return false;
             }

@@ -4,6 +4,6 @@
     {
         string GetName();
         void Rename(string name);
-        List<List<ITask>> GetPrioritedTaskList();
+        public Dictionary<int, List<ITask>> GetPrioritedTaskList();
     }
 }

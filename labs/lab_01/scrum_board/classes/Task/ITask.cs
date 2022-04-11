@@ -4,9 +4,9 @@
     {
         string GetDescription();
         string GetName();
-        ulong GetPriority();
+        int GetPriority();
         void Rename(string name);
         void SetDescription(string description);
-        void SetPriority(uint priority);
+        void SetPriority(int priority);
     }
 }
