@@ -27,7 +27,7 @@
 
         public bool RemoveTask(int taskPriority, int taskNumber)
         {
-            if (_prioritedTasks.Count < taskPriority || _prioritedTasks[taskPriority].Count < taskNumber)
+            if (_prioritedTasks.Count <= taskPriority || _prioritedTasks[taskPriority].Count <= taskNumber)
             {
                 return false;
             }
