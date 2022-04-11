@@ -5,20 +5,6 @@
         private string _name;
         private string _description;
         private uint _priority;
-        public Task(string name)
-        {
-            _name = name;
-            _description = "";
-            _priority = 0;
-        }
-
-        public Task(string name, string description)
-        {
-            _name = name;
-            _description = description;
-            _priority = 0;
-        }
-
         public Task(string name, string description, uint priority)
         {
             _name = name;

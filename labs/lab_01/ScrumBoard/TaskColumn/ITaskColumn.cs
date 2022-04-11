@@ -4,5 +4,6 @@
     {
         string GetName();
         void Rename(string name);
+        List<List<ITask>> GetPrioritedTaskList();
     }
 }

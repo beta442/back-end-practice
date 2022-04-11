@@ -1,13 +1,15 @@
 ﻿using ScrumBoard.TaskColumn;
+using System.Collections.ObjectModel;
 
 namespace ScrumBoard.Board
 {
+    using Task = Task.Task;
     using TaskColumn = TaskColumn.TaskColumn;
     internal class Board
     {
         
         private readonly string _name;
-        private List<ITaskColumn> _taskColumns = new();
+        private readonly ObservableCollection<ITaskColumn> _taskColumns = new();
 
         public Board(string name)
         {
@@ -35,18 +37,44 @@ namespace ScrumBoard.Board
 
         public int GetColumnIndexByName(string columnName)
         {
-            return _taskColumns.FindIndex(column => column.GetName() == columnName);
+            for (int i = 0; i < _taskColumns.Count; ++i)
+            {
+                if (_taskColumns[i].GetName() == columnName)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         public void MoveColumnFromTo(int indexFrom, int indexTo)
         {
-            if (indexFrom < 0 || indexTo < 0 || indexFrom >= _taskColumns.Count)
+            if (indexFrom < 0 || indexTo < 0 || indexFrom >= _taskColumns.Count || indexTo >= _taskColumns.Count)
             {
                 return;
             }
 
+            _taskColumns.Move(indexFrom, indexTo);
+        }
 
+        public void AddTaskIntoColumn(string taskName, string taskDescription, uint taskPriority, int columnIndex = 0)
+        {
+            if (taskName.Length == 0)
+            {
+                throw new Exception("Task's name can't be empty");
+            }
+            if (taskDescription.Length == 0)
+            {
+                throw new Exception("Task's description can't be empty");
+            }
+            if (columnIndex < 0 || columnIndex > _taskColumns.Count)
+            {
+                throw new Exception("Given column index is out of ragne, can't insert task");
+            }
 
+            Task task = new(taskName, taskDescription, taskPriority);
+
+            _taskColumns[columnIndex].GetPrioritedTaskList()[(int)taskPriority].Add(task);
         }
 
         public string GetBoardName()

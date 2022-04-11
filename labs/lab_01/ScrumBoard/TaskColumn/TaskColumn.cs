@@ -14,6 +14,11 @@
             return _name;
         }
 
+        public List<List<ITask>> GetPrioritedTaskList()
+        {
+            return _prioritedTasks;
+        }
+
         public void Rename(string name)
         {
             _name = name;
