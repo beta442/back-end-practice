@@ -4,6 +4,7 @@
     {
         private readonly Dictionary<int, List<ITask>> _prioritedTasks = new();
         private string _name;
+
         public TaskColumn(string name)
         {
             _name = name;
@@ -14,19 +15,49 @@
             return _name;
         }
 
-        public Dictionary<int, List<ITask>> GetPrioritedTaskMap()
+        public IReadOnlyDictionary<int, List<ITask>> GetPrioritedTaskMap()
         {
             return _prioritedTasks;
         }
 
         public ITask GetTaskBy(int taskPriority, int taskNumber)
         {
-            if (taskNumber < 0 || !HasColumnPrioritedTasks(taskPriority) || taskNumber >= _prioritedTasks[taskPriority].Count)
+            if (taskNumber < 0 ||
+                !HasColumnPrioritedTasks(taskPriority)
+                || taskNumber >= GetPrioritedTaskCount(taskPriority))
             {
                 throw new Exception("Failed find task");
             }
 
             return _prioritedTasks[taskPriority][taskNumber];
+        }
+
+        public int GetPrioritedTaskCount(int taskPriority)
+        {
+            if (!HasColumnPrioritedTasks(taskPriority))
+            {
+                return -1;
+            }
+            return _prioritedTasks[taskPriority].Count;
+        }
+
+        public int GetPrioritedTaskIndex(int taskPriority, string taskName)
+        {
+            if (taskName.Length == 0 || !_prioritedTasks.ContainsKey(taskPriority))
+            {
+                return -1;
+            }
+            return _prioritedTasks[taskPriority].FindIndex((task) => task.GetName() == taskName);
+        }
+
+        public int GetTaskCount()
+        {
+            int taskCount = 0;
+            foreach (KeyValuePair<int, List<ITask>> prioritedTaskList in _prioritedTasks)
+            {
+                taskCount += prioritedTaskList.Value.Count;
+            }
+            return taskCount;
         }
 
         public void Rename(string name)
@@ -51,13 +82,13 @@
 
         public void RemoveTask(int taskPriority, int taskNumber)
         {
-            if (taskNumber < 0 || !HasColumnPrioritedTasks(taskPriority) || taskNumber >= _prioritedTasks[taskPriority].Count)
+            if (taskNumber < 0 || !HasColumnPrioritedTasks(taskPriority) || taskNumber >= GetPrioritedTaskCount(taskPriority))
             {
                 throw new Exception("Failed to remove task from column");
             }
 
             _prioritedTasks[taskPriority].RemoveAt(taskNumber);
-            if (_prioritedTasks[taskPriority].Count == 0)
+            if (GetPrioritedTaskCount(taskPriority) == 0)
             {
                 RemovePrioritedTaskListInColumn(taskPriority);
             }
@@ -65,7 +96,7 @@
 
         public void AddPrioritedTaskListInColumn(int taskListPriority)
         {
-            if (HasColumnPrioritedTasks(taskListPriority))
+            if (!HasColumnPrioritedTasks(taskListPriority))
             {
                 return;
             }
@@ -79,6 +110,20 @@
                 return;
             }
             _prioritedTasks.Remove(taskListPriority);
+        }
+        public void PrintContent()
+        {
+            Console.WriteLine(_name + " column.");
+            foreach (KeyValuePair<int, List<ITask>> prioritedTasks in _prioritedTasks)
+            {
+                Console.WriteLine("---------------------------------------------");
+                Console.WriteLine("  Priority #" + prioritedTasks.Key.ToString());
+                foreach (ITask task in prioritedTasks.Value)
+                {
+                    Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                    task.PrintTask();
+                }
+            }
         }
     }
 }
