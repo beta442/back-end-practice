@@ -5,6 +5,7 @@
         private string _name;
         private string _description;
         private int _priority;
+
         public Task(string name, string description, int priority)
         {
             _name = name;
@@ -37,9 +38,10 @@
             return _priority;
         }
 
-        public void SetPriority(int priority)
+        public void PrintTask()
         {
-            _priority = priority;
+            Console.WriteLine("Title: " + _name);
+            Console.WriteLine("Description: " + _description);
         }
     }
 }
