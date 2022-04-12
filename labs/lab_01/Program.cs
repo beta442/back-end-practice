@@ -1,6 +1,6 @@
 ﻿using ScrumBoard.Board;
 
-void PrintBoardColumns(Board board)
+void PrintBoardColumnsNames(Board board)
 {
     List<string> columnNames = board.GetAllColumnsNames();
 
@@ -14,7 +14,7 @@ Board board = new("Project workflow");
 Console.WriteLine(board.GetBoardName());
 
 Console.WriteLine("Column names at board's init state:");
-PrintBoardColumns(board);
+PrintBoardColumnsNames(board);
 
 string columnName;
 for (int i = 2; i < 14; i++)
@@ -32,16 +32,26 @@ for (int i = 2; i < 14; i++)
 }
 
 Console.WriteLine("Column names after board filled up with columns:");
-PrintBoardColumns(board);
+PrintBoardColumnsNames(board);
 
 board.MoveColumnFromTo(3, 9);
 Console.WriteLine("Column names after moving 4 column to 10:");
-PrintBoardColumns(board);
+PrintBoardColumnsNames(board);
 
 board.AddTaskIntoColumn("Task0", "Task0 description", 0);
 board.AddTaskIntoColumn("Task1", "Task1 description", 0);
-board.AddTaskIntoColumn("Task3", "Task3 description", 0);
-board.AddTaskIntoColumn("Task5", "Task5 description", 0);
+board.AddTaskIntoColumn("Task2", "Task3 description", 0);
+board.AddTaskIntoColumn("Task3", "Task5 description", 0);
 
-Console.WriteLine("First column's content: ");
+Console.WriteLine("First column's content:");
 board.PrintColumnContent(0);
+
+Console.WriteLine("Second column's content before task moving:");
+board.PrintColumnContent(1);
+
+if (!board.MoveTaskToAnotherColumn(0, 1, 0, 2))
+{
+    Console.WriteLine("Failed to move task from first to second column");
+}
+Console.WriteLine("Second column's content after task moving:");
+board.PrintColumnContent(1);
