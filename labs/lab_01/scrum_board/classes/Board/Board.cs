@@ -75,7 +75,8 @@ namespace ScrumBoard.Board
 
         public void MoveColumnFromTo(int indexFrom, int indexTo)
         {
-            if (indexFrom < 0 || indexTo < 0 || indexFrom >= _taskColumns.Count || indexTo >= _taskColumns.Count)
+            if (indexFrom < 0 || indexTo < 0 || indexFrom >= _taskColumns.Count ||
+                indexTo >= _taskColumns.Count)
             {
                 return;
             }
@@ -83,15 +84,47 @@ namespace ScrumBoard.Board
             _taskColumns.Move(indexFrom, indexTo);
         }
 
+        public bool MoveTaskToAnotherColumn(int columnSourceIndex,
+            int columnDestinationIndex,
+            int taskPriority,
+            int taskNumber)
+        {
+            if (columnSourceIndex < 0 || columnSourceIndex >= _taskColumns.Count ||
+                columnDestinationIndex < 0 || columnDestinationIndex >= _taskColumns.Count ||
+                !_taskColumns[columnSourceIndex].HasColumnPrioritedTasks(taskPriority) ||
+                taskNumber < 0)
+            {
+                return false;
+            }
+
+            try
+            {
+                ITask task = _taskColumns[columnSourceIndex].GetTaskBy(taskPriority, taskNumber);
+                _taskColumns[columnSourceIndex].RemoveTask(taskPriority, taskNumber);
+                if (!_taskColumns[columnDestinationIndex].HasColumnPrioritedTasks(taskPriority))
+                {
+                    _taskColumns[columnDestinationIndex].AddPrioritedTaskListInColumn(taskPriority);
+                }
+                _taskColumns[columnDestinationIndex].GetPrioritedTaskMap()[taskPriority].Add(task);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return true;
+        }
+
         public void PrintColumnContent(int columnIndex)
         {
-            if (columnIndex < 0 || columnIndex >= _taskColumns.Count || _taskColumns[columnIndex].GetPrioritedTaskList().Count == 0)
+            if (columnIndex < 0 || columnIndex >= _taskColumns.Count ||
+                _taskColumns[columnIndex].GetPrioritedTaskMap().Count == 0)
             {
                 return;
             }
 
             uint taskPriority = 0;
-            foreach (KeyValuePair<int, List<ITask>> prioritedTaskList in _taskColumns[columnIndex].GetPrioritedTaskList())
+            foreach (var prioritedTaskList in _taskColumns[columnIndex].GetPrioritedTaskMap())
             {
                 Console.WriteLine("Tasks with " + taskPriority.ToString() + " priority:");
                 foreach (ITask task in prioritedTaskList.Value)
@@ -103,7 +136,10 @@ namespace ScrumBoard.Board
             }
         }
 
-        public void AddTaskIntoColumn(string taskName, string taskDescription, int taskPriority, int columnIndex = 0)
+        public void AddTaskIntoColumn(string taskName,
+            string taskDescription,
+            int taskPriority,
+            int columnIndex = 0)
         {
             if (taskName.Length == 0)
             {
@@ -117,14 +153,15 @@ namespace ScrumBoard.Board
             {
                 throw new Exception("Given column index is out of ragne, can't insert task");
             }
-            if (!_taskColumns[columnIndex].GetPrioritedTaskList().ContainsKey(taskPriority))
+
+            if (!_taskColumns[columnIndex].HasColumnPrioritedTasks(taskPriority))
             {
-                _taskColumns[columnIndex].GetPrioritedTaskList().Add(taskPriority, new List<ITask>());
+                _taskColumns[columnIndex].AddPrioritedTaskListInColumn(taskPriority);
             }
 
             Task task = new(taskName, taskDescription, taskPriority);
 
-            _taskColumns[columnIndex].GetPrioritedTaskList()[taskPriority].Add(task);
+            _taskColumns[columnIndex].AddTask(task);
         }
 
         public string GetBoardName()
