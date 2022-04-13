@@ -3,7 +3,8 @@
     internal interface IBoard
     {
         void AddColumn(string name);
-        void AddTaskIntoColumn(string taskName, string taskDescription, int taskPriority, int columnIndex = 0);
+        void AddTaskIntoColumn(string taskName,
+            string taskDescription, int taskPriority, int columnIndex = 0);
         List<string> GetAllColumnsNames();
         string GetBoardName();
         int GetColumnAmount();
@@ -13,9 +14,12 @@
             int taskPriority, string taskName);
         void PrintBoard();
         void MoveColumnFromTo(int indexFrom, int indexTo);
-        bool MoveTaskToAnotherColumn(int columnSourceIndex, int columnDestinationIndex, int taskPriority, int taskNumber);
+        void MoveTaskToAnotherColumn(string columnSourceName,
+            string columnDestinationName, int taskPriority, string taskName);
         void Rename(string name);
         void RenameColumn(string prevName, string newName);
-        void RemoveTaskFromColumn(string columnName, int taskPriority, string taskName);
+        void RemoveColumn(string name);
+        void RemoveTaskFromColumn(string columnName,
+            int taskPriority, string taskName);
     }
 }

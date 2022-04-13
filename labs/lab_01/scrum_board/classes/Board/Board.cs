@@ -106,28 +106,53 @@ namespace ScrumBoard.Board
 
         public void MoveColumnFromTo(int indexFrom, int indexTo)
         {
-            if (indexFrom < 0 || indexTo < 0 || indexFrom >= _taskColumns.Count ||
-                indexTo >= _taskColumns.Count)
+            try
             {
-                return;
+                if (indexFrom < 0 || indexFrom >= _taskColumns.Count)
+                {
+                    throw new Exception("Failed to move task, no such column to move");
+                }
+                if (indexTo < 0 || indexTo >= _taskColumns.Count)
+                {
+                    throw new Exception("Failed to move task, can't move column to given index");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
             _taskColumns.Move(indexFrom, indexTo);
         }
 
-        public bool MoveTaskToAnotherColumn(int columnSourceIndex,
-            int columnDestinationIndex, int taskPriority, int taskNumber)
+        public void MoveTaskToAnotherColumn(string columnSourceName,
+            string columnDestinationName, int taskPriority, string taskName)
         {
-            if (columnSourceIndex < 0 || columnSourceIndex >= _taskColumns.Count ||
-                columnDestinationIndex < 0 || columnDestinationIndex >= _taskColumns.Count ||
-                !_taskColumns[columnSourceIndex].HasColumnPrioritedTasks(taskPriority) ||
-                taskNumber < 0)
-            {
-                return false;
-            }
-
             try
             {
+                if (!_taskColumns.Any(column => column.GetName() == columnSourceName))
+                {
+                    throw new Exception("Failed to move task, no such source column");
+                }
+                if (!_taskColumns.Any(column => column.GetName() == columnDestinationName))
+                {
+                    throw new Exception("Failed to move task, no such destination column");
+                }
+                int columnSourceIndex =
+                    _taskColumns.IndexOf(_taskColumns.First(column => column.GetName() == columnSourceName));
+                if (!_taskColumns[columnSourceIndex].HasColumnPrioritedTasks(taskPriority))
+                {
+                    throw new Exception("Failed to move task, no such priorited tasks");
+                }
+                int taskNumber =
+                    _taskColumns[columnSourceIndex].GetPrioritedTaskIndex(taskPriority, taskName);
+                if (taskNumber < 0)
+                {
+                    throw new Exception("Failed to move task, no such priorited task");
+                }
+
+                int columnDestinationIndex =
+                    _taskColumns.IndexOf(_taskColumns.First(column => column.GetName() == columnDestinationName));
                 ITask task = _taskColumns[columnSourceIndex].GetTaskBy(taskPriority, taskNumber);
                 _taskColumns[columnSourceIndex].RemoveTask(taskPriority, taskNumber);
                 if (!_taskColumns[columnDestinationIndex].HasColumnPrioritedTasks(taskPriority))
@@ -139,9 +164,10 @@ namespace ScrumBoard.Board
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return;
             }
 
-            return true;
+            return;
         }
         public void AddTaskIntoColumn(string taskName,
             string taskDescription, int taskPriority, int columnIndex = 0)
@@ -177,7 +203,7 @@ namespace ScrumBoard.Board
             }
 
             Task task = new(taskName, taskDescription, taskPriority);
-             
+
             _taskColumns[columnIndex].AddTask(task);
         }
 
@@ -186,6 +212,7 @@ namespace ScrumBoard.Board
             Console.WriteLine(_name + ':');
             foreach (ITaskColumn? taskColumn in _taskColumns)
             {
+                Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++");
                 taskColumn.PrintContent();
                 Console.WriteLine("+++++++++++++++++++++++++++++++++++++++++++++");
             }
@@ -229,6 +256,24 @@ namespace ScrumBoard.Board
                 Console.WriteLine(ex.Message);
                 return;
             }
+        }
+
+        public void RemoveColumn(string name)
+        {
+            try
+            {
+                if (!_taskColumns.Any(column => column.GetName() == name))
+                {
+                    throw new Exception("Failed remove column, no such column");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return;
+            }
+
+            _taskColumns.Remove(_taskColumns.First(column => column.GetName() == name));
         }
 
         public void RenameColumn(string prevName, string newName)
