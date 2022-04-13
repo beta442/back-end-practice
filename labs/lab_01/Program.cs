@@ -63,6 +63,8 @@ namespace ScrumBoardApplication
                     PrintHelpMessage();
                     Console.WriteLine();
                 }
+
+                string[] splitedArgs = userInput.Split(' ');
                 if (userInput != null &&
                     userInput.Contains(RENAME_BOARD_COMMAND, StringComparison.OrdinalIgnoreCase))
                 {
@@ -72,7 +74,7 @@ namespace ScrumBoardApplication
                     }
                     else
                     {
-                        board.Rename(userInput.Split(' ').Skip(1).First());
+                        board.Rename(splitedArgs.Skip(1).First());
                     }
                 }
                 if (userInput != null &&
@@ -84,45 +86,46 @@ namespace ScrumBoardApplication
                     }
                     else
                     {
-                        board.AddColumn(userInput.Split(' ').Skip(1).First());
+                        board.AddColumn(splitedArgs.Skip(1).First());
                     }
                 }
                 if (userInput != null &&
                     userInput.Contains(RENAME_COLUMN_COMMAND, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (userInput.Count(ch => ch == ' ') != 2)
+                    if (splitedArgs.Length != 3 || splitedArgs.Any(arg => arg.Length == 0))
                     {
                         Console.WriteLine("Wrong arguments count");
                     }
                     else
                     {
-                        board.RenameColumn(userInput.Split(' ').Skip(1).First(),
-                            userInput.Split(' ').Skip(2).First());
+                        board.RenameColumn(splitedArgs.Skip(1).First(),
+                            splitedArgs.Skip(2).First());
                     }
                 }
                 if (userInput != null &&
                     userInput.Contains(ADD_TASK_COMMAND, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (!(userInput.Count(ch => ch == ' ') >= 2 ||
-                        userInput.Count(ch => ch == ' ') <= 4))
+                    if (!(splitedArgs.Length >= 3 && splitedArgs.Length <= 5) ||
+                        splitedArgs.Any(arg => arg.Length == 0))
                     {
                         Console.WriteLine("Wrong arguments count");
                     }
                     else
                     {
-                        string taskName = userInput.Split(' ').Skip(1).First();
-                        string taskDescription = userInput.Split(' ').Skip(2).First();
-                        int taskPriority =
-                            userInput.Count(ch => ch == ' ') >= 3
-                            ? int.Parse(userInput.Split(' ').Skip(3).First())
-                            : 0;
+                        string taskName = splitedArgs.Skip(1).First();
+                        string taskDescription = splitedArgs.Skip(2).First();
+                        int taskPriority = 0;
+                        if (splitedArgs.Length >= 3 && splitedArgs.Skip(3).First().Length != 0)
+                        {
+                            int.TryParse(splitedArgs.Skip(3).First(), out taskPriority);
+                        }
                         string columnName =
-                            userInput.Count(ch => ch == ' ') == 4
-                            ? userInput.Split(' ').Skip(4).First()
+                            splitedArgs.Length == 5
+                            ? splitedArgs.Skip(4).First()
                             : "";
                         int columnIndex = board.GetColumnIndexByName(columnName);
 
-                        if (userInput.Count(ch => ch == ' ') != 4)
+                        if (splitedArgs.Length != 5)
                         {
                             board.AddTaskIntoColumn(taskName, taskDescription, taskPriority);
                         }
@@ -135,36 +138,24 @@ namespace ScrumBoardApplication
                 if (userInput != null &&
                     userInput.Contains(REMOVE_TASK_COMMAND, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (userInput.Count(ch => ch == ' ') != 3)
+                    if (splitedArgs.Length != 4 || splitedArgs.Any(arg => arg.Length == 0))
                     {
                         Console.WriteLine("Wrong arguments count");
                     }
                     else
                     {
-                        if (int.TryParse(userInput.Split(' ').Skip(2).First(), out int taskPriority))
+                        try
                         {
-                            string taskName = userInput.Split(' ').Skip(3).First();
-                            string columnName = userInput.Split(' ').Skip(1).First();
+                            int taskPriority = int.Parse(splitedArgs.Skip(2).First());
 
-                            int columnIndex = board.GetColumnIndexByName(columnName);
-                            if (columnIndex == -1)
-                            {
-                                Console.WriteLine("No such column");
-                            }
-                            else
-                            {
-                                int taskIndex =
-                                    board.GetPrioritedTaskIndexByNameFromColumn(columnIndex,
-                                    taskPriority, taskName);
-                                if (taskIndex != -1)
-                                {
-                                    board.RemoveTaskFromColumn(columnIndex, taskPriority, taskIndex);
-                                }
-                            }
+                            string taskName = splitedArgs.Skip(3).First();
+                            string columnName = splitedArgs.Skip(1).First();
+
+                            board.RemoveTaskFromColumn(columnName, taskPriority, taskName);
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            Console.WriteLine("<taskPriority> should be an integer");
+                            Console.WriteLine(ex.Message);
                         }
                     }
                 }

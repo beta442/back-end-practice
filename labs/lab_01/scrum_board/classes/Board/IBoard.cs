@@ -16,6 +16,6 @@
         bool MoveTaskToAnotherColumn(int columnSourceIndex, int columnDestinationIndex, int taskPriority, int taskNumber);
         void Rename(string name);
         void RenameColumn(string prevName, string newName);
-        public void RemoveTaskFromColumn(int columnIndex, int taskPriority, int taskNumber);
+        void RemoveTaskFromColumn(string columnName, int taskPriority, string taskName);
     }
 }

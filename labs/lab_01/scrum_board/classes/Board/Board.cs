@@ -150,15 +150,19 @@ namespace ScrumBoard.Board
             {
                 if (taskName.Length == 0)
                 {
-                    throw new Exception("Task's name can't be empty");
+                    throw new Exception("Failed to add task, task's name can't be empty");
                 }
                 if (taskDescription.Length == 0)
                 {
-                    throw new Exception("Task's description can't be empty");
+                    throw new Exception("Failed to add task, task's description can't be empty");
                 }
                 if (columnIndex < 0 || columnIndex >= _taskColumns.Count)
                 {
-                    throw new Exception("Given column index is out of range, can't insert task");
+                    throw new Exception("Failed to add task, no such column, can't insert task");
+                }
+                if (_taskColumns.Count == 0)
+                {
+                    throw new Exception("Failed to add task, board doesn't contain any column");
                 }
             }
             catch (Exception ex)
@@ -196,18 +200,35 @@ namespace ScrumBoard.Board
             _name = name;
         }
 
-        public void RemoveTaskFromColumn(int columnIndex, int taskPriority, int taskNumber)
+        public void RemoveTaskFromColumn(string columnName, int taskPriority, string taskName)
         {
-            if (columnIndex < 0 ||
-                columnIndex >= _taskColumns.Count ||
-                _taskColumns[columnIndex].GetPrioritedTaskCount(taskPriority) == -1 ||
-                taskNumber < 0 ||
-                taskNumber >= _taskColumns[columnIndex].GetPrioritedTaskCount(taskPriority))
+            try
             {
+                if (columnName.Length == 0 || !_taskColumns.Any(column => column.GetName() == columnName))
+                {
+                    throw new Exception("Failed to remove task, no such column");
+                }
+
+                int columnIndex =
+                    _taskColumns.IndexOf(_taskColumns.First(column => column.GetName() == columnName));
+                if (!_taskColumns[columnIndex].HasColumnPrioritedTasks(taskPriority))
+                {
+                    throw new Exception("Failed to remove task, no such priorited tasks in column");
+                }
+                if (taskName.Length == 0 ||
+                    _taskColumns[columnIndex].GetPrioritedTaskIndex(taskPriority, taskName) == -1)
+                {
+                    throw new Exception("Failed to remove task, no such task in column");
+                }
+
+                int taskNumber = _taskColumns[columnIndex].GetPrioritedTaskIndex(taskPriority, taskName);
+                _taskColumns[columnIndex].RemoveTask(taskPriority, taskNumber);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
                 return;
             }
-
-            _taskColumns[columnIndex].RemoveTask(taskPriority, taskNumber);
         }
 
         public void RenameColumn(string prevName, string newName)
