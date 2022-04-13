@@ -13,7 +13,6 @@ namespace ScrumBoardApplication
         private const string REMOVE_TASK_COMMAND = "removeTask";
         private const string REMOVE_COLUMN_COMMAND = "removeColumn";
         private const string RENAME_COLUMN_COMMAND = "renameColumn";
-        private const string RENAME_BOARD_COMMAND = "renameBoard";
         private const string PRINT_BOARD_COMMAND = "show";
 
         private static readonly Dictionary<string, string> s_commandsDescription = new()
@@ -51,11 +50,6 @@ namespace ScrumBoardApplication
                 RENAME_COLUMN_COMMAND,
                 "Renames chosen column by given name, e.g. " +
                 RENAME_COLUMN_COMMAND + " <previousName> <newName>"
-            },
-            {
-                RENAME_BOARD_COMMAND,
-                "Renames board, e.g. " +
-                RENAME_BOARD_COMMAND + " <name>"
             },
             { PRINT_BOARD_COMMAND, "Show board's content" },
             { HELP_COMMAND, "Shows program usage" },
@@ -107,19 +101,6 @@ namespace ScrumBoardApplication
                 }
 
                 string[] splitedArgs = userInput.Split(' ');
-                if (userInput != null &&
-                    userInput.Contains(RENAME_BOARD_COMMAND, StringComparison.OrdinalIgnoreCase))
-                {
-                    if (!userInput.Contains(' '))
-                    {
-                        Console.WriteLine("No name given. See help");
-                    }
-                    else
-                    {
-                        board.Rename(splitedArgs.Skip(1).First());
-                    }
-                    continue;
-                }
                 if (userInput != null &&
                     userInput.Contains(ADD_COLUMN_COMMAND, StringComparison.OrdinalIgnoreCase))
                 {

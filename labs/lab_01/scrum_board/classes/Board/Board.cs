@@ -218,15 +218,6 @@ namespace ScrumBoard.Board
             }
         }
 
-        public void Rename(string name)
-        {
-            if (name.Length == 0)
-            {
-                return;
-            }
-            _name = name;
-        }
-
         public void RemoveTaskFromColumn(string columnName, int taskPriority, string taskName)
         {
             try

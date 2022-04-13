@@ -16,7 +16,6 @@
         void MoveColumnFromTo(int indexFrom, int indexTo);
         void MoveTaskToAnotherColumn(string columnSourceName,
             string columnDestinationName, int taskPriority, string taskName);
-        void Rename(string name);
         void RenameColumn(string prevName, string newName);
         void RemoveColumn(string name);
         void RemoveTaskFromColumn(string columnName,
