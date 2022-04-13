@@ -2,7 +2,7 @@
 {
     internal class TaskColumn : ITaskColumn
     {
-        private readonly Dictionary<int, List<ITask>> _prioritedTasks = new();
+        private readonly SortedDictionary<int, List<ITask>> _prioritedTasks = new();
         private string _name;
 
         public TaskColumn(string name)
