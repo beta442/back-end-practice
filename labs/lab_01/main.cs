@@ -74,7 +74,7 @@ namespace ScrumBoardApplication
             PrintHelpMessage();
             Console.WriteLine();
 
-            IBoard board = new Board("ScrumbBoard");
+            Board board = new("ScrumbBoard");
 
             bool isExitCommand = false;
             while (!isExitCommand)
@@ -110,7 +110,14 @@ namespace ScrumBoardApplication
                     }
                     else
                     {
-                        board.AddColumn(splitedArgs.Skip(1).First());
+                        try
+                        {
+                            board.AddColumn(splitedArgs.Skip(1).First());
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                     }
                     continue;
                 }
@@ -123,8 +130,15 @@ namespace ScrumBoardApplication
                     }
                     else
                     {
-                        board.RenameColumn(splitedArgs.Skip(1).First(),
+                        try
+                        {
+                            board.RenameColumn(splitedArgs.Skip(1).First(), 
                             splitedArgs.Skip(2).First());
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                     }
                     continue;
                 }
@@ -153,13 +167,20 @@ namespace ScrumBoardApplication
                             : "";
                         int columnIndex = board.GetColumnIndexByName(columnName);
 
-                        if (splitedArgs.Length != 5)
+                        try
                         {
-                            board.AddTaskIntoColumn(taskName, taskDescription, taskPriority);
+                            if (splitedArgs.Length != 5)
+                            {
+                                board.AddTaskIntoColumn(taskName, taskDescription, taskPriority);
+                            }
+                            else
+                            {
+                                board.AddTaskIntoColumn(taskName, taskDescription, taskPriority, columnIndex);
+                            }
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            board.AddTaskIntoColumn(taskName, taskDescription, taskPriority, columnIndex);
+                            Console.WriteLine(ex.Message);
                         }
                     }
                     continue;
@@ -198,7 +219,14 @@ namespace ScrumBoardApplication
                     }
                     else
                     {
-                        board.RemoveColumn(splitedArgs.Skip(1).First());
+                        try
+                        {
+                            board.RemoveColumn(splitedArgs.Skip(1).First());
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
                     }
                     continue;
                 }
@@ -217,9 +245,9 @@ namespace ScrumBoardApplication
                             int destionationIndex = int.Parse(splitedArgs.Skip(2).First());
                             board.MoveColumnFromTo(sourceIndex, destionationIndex);
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            Console.WriteLine("Each index should be an integer");
+                            Console.WriteLine(ex.Message);
                         }
                     }
                     continue;
