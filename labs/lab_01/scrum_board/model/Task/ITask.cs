@@ -6,7 +6,5 @@
         string GetName();
         int GetPriority();
         void PrintTask();
-        void Rename(string name);
-        void SetDescription(string description);
     }
 }

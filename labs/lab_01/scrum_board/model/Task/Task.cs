@@ -18,19 +18,9 @@
             return _name;
         }
 
-        public void Rename(string name)
-        {
-            _name = name;
-        }
-
         public string GetDescription()
         {
             return _description;
-        }
-
-        public void SetDescription(string description)
-        {
-            _description = description;
         }
 
         public int GetPriority()
