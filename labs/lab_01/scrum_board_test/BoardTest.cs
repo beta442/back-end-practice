@@ -1,6 +1,6 @@
 using Xunit;
 
-using ScrumBoard.Board;
+using ScrumBoard;
 using ScrumBoard.Factory;
 using System;
 
