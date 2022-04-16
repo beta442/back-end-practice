@@ -1,4 +1,5 @@
-﻿using ScrumBoard.Board;
+﻿using ScrumBoard;
+using ScrumBoard.Factory;
 
 namespace ScrumBoardApplication
 {
@@ -74,7 +75,7 @@ namespace ScrumBoardApplication
             PrintHelpMessage();
             Console.WriteLine();
 
-            Board board = new("ScrumbBoard");
+            IBoard board = ScrumBoardFactory.CreateBoard("ScrumbBoard");
 
             bool isExitCommand = false;
             while (!isExitCommand)
