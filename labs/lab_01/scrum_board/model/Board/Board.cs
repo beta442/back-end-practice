@@ -13,7 +13,14 @@ namespace ScrumBoard.Board
 
         public Board(string name)
         {
-            _name = name;
+            if (name.Length == 0)
+            {
+                _name = "ScrumBoard";
+            }
+            else
+            {
+                _name = name;
+            }
         }
 
         public string GetBoardName()
@@ -64,7 +71,7 @@ namespace ScrumBoard.Board
             return _taskColumns.Count;
         }
 
-        public int GetPrioritedTaskIndexByNameFromColumn(int columnIndex,
+        public int GetPrioritedTaskIndexFromColumnBy(int columnIndex,
             int taskPriority, string taskName)
         {
             if (taskName.Length == 0 ||
@@ -171,11 +178,6 @@ namespace ScrumBoard.Board
             if (_taskColumns.Count == 0)
             {
                 throw new Exception("Failed to add task, board doesn't contain any column");
-            }
-
-            if (!_taskColumns[columnIndex].HasColumnPrioritedTasks(taskPriority))
-            {
-                _taskColumns[columnIndex].AddPrioritedTaskListInColumn(taskPriority);
             }
 
             Task task = new(taskName, taskDescription, taskPriority);

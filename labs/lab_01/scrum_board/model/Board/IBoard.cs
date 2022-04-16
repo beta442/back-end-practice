@@ -10,7 +10,7 @@
         int GetColumnAmount();
         int GetColumnIndexByName(string columnName);
         string GetColumnNameByIndex(int columnIndex);
-        int GetPrioritedTaskIndexByNameFromColumn(int columnIndex,
+        int GetPrioritedTaskIndexFromColumnBy(int columnIndex,
             int taskPriority, string taskName);
         void PrintBoard();
         void MoveColumnFromTo(int indexFrom, int indexTo);
