@@ -89,7 +89,9 @@
 
         public void RemoveTask(int taskPriority, int taskNumber)
         {
-            if (taskNumber < 0 || !HasColumnPrioritedTasks(taskPriority) || taskNumber >= GetPrioritedTaskCount(taskPriority))
+            if (taskNumber < 0 ||
+                !HasColumnPrioritedTasks(taskPriority) ||
+                taskNumber >= GetPrioritedTaskCount(taskPriority))
             {
                 throw new Exception("Failed to remove task from column");
             }
