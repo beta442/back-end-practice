@@ -1,6 +1,6 @@
 ﻿namespace ScrumBoard.TaskColumn
 {
-    internal interface ITaskColumn
+    public interface ITaskColumn
     {
         void AddPrioritedTaskListInColumn(int taskPriority);
         void AddTask(ITask task);

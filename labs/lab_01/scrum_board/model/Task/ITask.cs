@@ -1,6 +1,6 @@
 ﻿namespace ScrumBoard
 {
-    internal interface ITask
+    public interface ITask
     {
         string GetDescription();
         string GetName();

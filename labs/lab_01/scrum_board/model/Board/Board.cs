@@ -6,7 +6,7 @@ namespace ScrumBoard.Board
     using Task = Task.Task;
     using TaskColumn = TaskColumn.TaskColumn;
 
-    public class Board : IBoard
+    internal class Board : IBoard
     {
         private string _name;
         private readonly ObservableCollection<ITaskColumn> _taskColumns = new();

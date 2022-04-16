@@ -1,6 +1,6 @@
 ﻿namespace ScrumBoard.Board
 {
-    internal interface IBoard
+    public interface IBoard
     {
         void AddColumn(string name);
         void AddTaskIntoColumn(string taskName,
