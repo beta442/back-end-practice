@@ -1,11 +1,9 @@
-﻿using ScrumBoard.TaskColumn;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
-namespace ScrumBoard.Board
+using ScrumBoard.Factory;
+
+namespace ScrumBoard
 {
-    using Task = Task.Task;
-    using TaskColumn = TaskColumn.TaskColumn;
-
     internal class Board : IBoard
     {
         private string _name;
@@ -99,7 +97,7 @@ namespace ScrumBoard.Board
                 throw new Exception("The board can contain no more than 10 columns");
             }
 
-            _taskColumns.Add(new TaskColumn(name));
+            _taskColumns.Add(CreateColumn(name));
         }
 
         public void MoveColumnFromTo(int indexFrom, int indexTo)
@@ -180,7 +178,7 @@ namespace ScrumBoard.Board
                 throw new Exception("Failed to add task, board doesn't contain any column");
             }
 
-            Task task = new(taskName, taskDescription, taskPriority);
+            ITask task = CreateTask(taskName, taskDescription, taskPriority);
 
             _taskColumns[columnIndex].AddTask(task);
         }
@@ -262,6 +260,16 @@ namespace ScrumBoard.Board
                 }
             }
             throw new Exception("No such column");
+        }
+
+        private ITask CreateTask(string taskName, string taskDescription, int taskPriority)
+        {
+            return ScrumBoardFactory.CreateTask(taskName, taskDescription, taskPriority);
+        }
+
+        private ITaskColumn CreateColumn(string columnName)
+        {
+            return ScrumBoardFactory.CreateColumn(columnName);
         }
     }
 }

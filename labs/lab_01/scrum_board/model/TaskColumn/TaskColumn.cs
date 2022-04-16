@@ -7,7 +7,14 @@
 
         public TaskColumn(string name)
         {
-            _name = name;
+            if (name.Length == 0)
+            {
+                _name = "Column";
+            }
+            else
+            {
+                _name = name;
+            }
         }
 
         public string GetName()
@@ -96,7 +103,7 @@
 
         public void AddPrioritedTaskListInColumn(int taskListPriority)
         {
-            if (!HasColumnPrioritedTasks(taskListPriority))
+            if (HasColumnPrioritedTasks(taskListPriority))
             {
                 return;
             }

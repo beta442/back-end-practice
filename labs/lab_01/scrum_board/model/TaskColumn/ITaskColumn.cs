@@ -1,4 +1,4 @@
-﻿namespace ScrumBoard.TaskColumn
+﻿namespace ScrumBoard
 {
     public interface ITaskColumn
     {

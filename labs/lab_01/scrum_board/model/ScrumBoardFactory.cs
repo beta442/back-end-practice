@@ -1,12 +1,5 @@
-﻿using ScrumBoard.Board;
-using ScrumBoard.TaskColumn;
-
-namespace ScrumBoard.Factory
+﻿namespace ScrumBoard.Factory
 {
-    using Board = Board.Board;
-    using TaskColumn = TaskColumn.TaskColumn;
-    using Task = Task.Task;
-
     public class ScrumBoardFactory
     {
         public static IBoard CreateBoard(string title)
@@ -16,12 +9,12 @@ namespace ScrumBoard.Factory
 
         public static ITaskColumn CreateColumn(string title)
         {
-            return new TaskColumn(title);
+            return new TaskColumn.TaskColumn(title);
         }
 
         public static ITask CreateTask(string title, string description, int priority)
         {
-            return new Task(title, description, priority);
+            return new Task.Task(title, description, priority);
         }
     }
 }

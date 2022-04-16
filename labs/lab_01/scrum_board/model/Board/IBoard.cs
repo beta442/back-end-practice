@@ -1,4 +1,4 @@
-﻿namespace ScrumBoard.Board
+﻿namespace ScrumBoard
 {
     public interface IBoard
     {
